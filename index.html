@@ -11,11 +11,12 @@
         font-size: 50px; line-height: 0px; text-align: center;
         box-shadow: 0px 0px 10px rgb(0, 0, 50); text-shadow: 0px 0px 1px rgb(0, 0, 50);}
         #console {margin-top: 15px; min-height: 150px; width:100vw; background-color:rgb(255, 255, 150) }
+        canvas {border: 1px solid black; background: lightcyan}
     </style>
 </head>
 <body>
     <div id="banner"><p>JavaScript Test Page</p></div>
-    <div><button id="testbutton">Test console</button></div>
+<!--   <div><button id="testbutton">Test console</button></div> --> 
     <div><p>Type for key codes</p><br><input id="field1" /><br><br></div>
     <div> <b>Pizza calculator</b>
         <p id="pizzacalc">
@@ -26,17 +27,24 @@
             </p>
         <button id="pizzabutton">Calculate!</button>
         </div>
-    <div id="console"></div>
+<!--    <div id="console"></div> -->
+    <div><button id="canvasbutton">Test canvas</button>
+        <button id="clearbutton">Clear canvas</button>
+        <button id="playbutton">Play</button>
+        <button id="resetbutton">Reset</button>
+        </div>
+    <canvas id="myCanvas" width="700" height="700"></canvas>
 <script>
+    window.onload=function(){
     var blankpizzacalc = document.querySelector('#pizzacalc').innerHTML;
-    function printer(message){
-        document.querySelector('#console').insertAdjacentHTML("beforeend",message+"<br>")
-        }
-    document.querySelector('#testbutton').addEventListener("click", function(){
-        printer('Event type: '+ event.type + ' | Event target: ' + event.target)
-        });
+//    function printer(message){
+//        document.querySelector('#console').insertAdjacentHTML("beforeend",message+"<br>")
+//        }
+//    document.querySelector('#testbutton').addEventListener("click", function(){
+//        printer('Event type: '+ event.type + ' | Event target: ' + event.target)
+//        });
     document.querySelector('#field1').addEventListener('keydown', function(){
-        printer('Key: ' + event.key + ' Code: ' + event.keyCode)
+        printvas('Key: ' + event.key + ' Code: ' + event.keyCode)
         });
     document.querySelector('#pizzabutton').addEventListener("click", function(){
         var diam = document.querySelector('#diam1').value;
@@ -44,20 +52,145 @@
         var num = document.querySelector('#num1').value;
         var cost = document.querySelector('#cost1').value;
         var worth = (num*Math.PI*Math.pow((diam/2)-crust,2)/cost);
-        printer( worth + ' square inches of pizza per dollar');
+        printvas( worth + ' square inches of pizza per dollar');
         document.querySelector('#pizzacalc').innerHTML=blankpizzacalc;
         });
-
+    // Canvas JS
+    var canvas, ctx, w, h, z, keys=[];
+    var player = {x:350,y:200,height:20,width:10,color:'red',xvel:0,yvel:0};
+    var ball = {x:350, y:500, radius:20, color:'blue', xvel:(Math.random() * (5 - 3) + 3), yvel:(Math.random() * (5 - 3) + 3)};
+    var bullet = {x:0,y:0,radius:5,color:'yellow',xvel:0,yvel:0};
+    var direction = 'ArrowUp';
+    var bullets = [];
+    canvas = document.querySelector("#myCanvas");
+        ctx = canvas.getContext('2d');
+        ctx.font = "20px monospace";
+        w = canvas.width; h=canvas.height; z=25;
+    function printvas(message){
+        ctx.fillText(message,0,z);
+        z += 25;
+        }
+    function clearvas(){
+        ctx.clearRect(0,0,w,h);
+        z = 25; 
+        }
+    function resetgame(){
+        cancelAnimationFrame(requestAnimationFrame(play));
+        player.x=350; player.y=200; ball.x=350; ball.y=500; ball.xvel=(Math.random() * (5 - 3) + 3);ball.yvel=(Math.random() * (5 - 3) + 3);bullets=[];
+        clearvas();
+    }
+    function drawplayer(player){
+        ctx.save();
+        ctx.translate(player.x,player.y);
+        ctx.fillStyle=player.color;
+        ctx.fillRect (0,0,player.width,player.height)
+        ctx.restore();
+        }
+    function drawball(ball){
+        ctx.save();
+        ctx.translate(ball.x,ball.y);
+        ctx.fillStyle=ball.color;
+        ctx.beginPath();
+        ctx.arc(0, 0, ball.radius, 0, 2*Math.PI);
+        ctx.fill();
+        ctx.restore();
+        }
+    function drawbullets(bullets){
+        for (var i = 0; i < bullets.length ; i++) {
+            ctx.save();
+            ctx.translate(bullets[i].x,bullets[i].y);
+            ctx.fillStyle=bullets[i].color;
+            ctx.beginPath();
+            ctx.arc(0, 0, bullets[i].radius, 0, 2*Math.PI);
+            ctx.fill();
+            ctx.restore();
+        }
+        }
+    function moveplayer(player){
+//        if (direction != 'ArrowUp' || direction != 'ArrowDown' || direction != 'ArrowRight' || direction != 'ArrowLeft'){direction='ArrowUp'};
+        for (var i = 0; i < keys.length ; i++) {
+            if (keys[i]=='ArrowUp'){player.y -= 5; direction=keys[i];};
+            if (keys[i]=='ArrowDown'){player.y += 5;direction=keys[i];};
+            if (keys[i]=='ArrowRight'){player.x += 5;direction=keys[i];};
+            if (keys[i]=='ArrowLeft'){player.x -= 5;direction=keys[i];};
+            if (keys[i]=='Control'){shoot(direction);};
+        }
+        if (player.x+player.width > w) {player.x=w-player.width};
+        if (player.x < 0) {player.x=0};
+        if (player.y+player.height > h) {player.y=h-player.height}
+        if (player.y < 0) {player.y=0}
+        keys = [];
+        }
+    function shoot(direction){
+            thisbullet = bullet;
+            thisbullet.x=player.x;
+            thisbullet.y=player.y;
+            if (direction=='ArrowUp'){thisbullet.yvel=-5
+            } else if (direction=='ArrowDown'){thisbullet.yvel=5
+            } else if (direction=='ArrowRight'){thisbullet.xvel=5
+            } else if (direction=='ArrowLeft'){thisbullet.xvel=-5};
+            bullets.push(thisbullet);
+        }
+    function moveball(ball){
+        ball.x += ball.xvel;
+        ball.y += ball.yvel;
+        if (ball.x+ball.radius >= w || ball.x-ball.radius <= 0){ ball.xvel = -ball.xvel}
+        if (ball.y+ball.radius >= h || ball.y-ball.radius <= 0){ ball.yvel = -ball.yvel}
+        }
+    function movebullets(bullets){
+        for (var i = 0; i < bullets.length ; i++) {
+        bullets[i].x += bullets[i].xvel;
+        bullets[i].y += bullets[i].yvel;
+        }
+        }
+    function deathcheck(player,ball){
+        if (ball.x+ball.radius >= player.x && ball.x-ball.radius <= player.x+player.width && ball.y+ball.radius >= player.y && ball.y-ball.radius <= player.y+player.height){
+            clearvas();
+            printvas("YOU DIED!");
+            return(true)
+        }
+        for (var i = 0; i < bullets.length ; i++) {
+            if (ball.x-ball.radius <= bullets[i].x+bullets[i].radius && bullets[i].x-bullets[i].radius <= ball.x+ball.radius &&
+            ball.y+ball.radius >= bullets[i].y-bullets[i].radius && bullets[i].y+bullets[i].radius >= ball.y-ball.radius){
+            clearvas();
+            printvas("YOU WON!");
+            return(true)
+        }
+        }
+        }
+    function play() {
+        clearvas();
+        drawplayer(player);
+        drawball(ball);
+        drawbullets(bullets);
+        moveplayer(player);
+        moveball(ball);
+        movebullets(bullets);
+        if (deathcheck(player,ball)==true){return}
+        requestAnimationFrame(play);
+        }
+    window.addEventListener('keydown', function(){
+        keys.push(event.key)
+        });
+    document.querySelector('#canvasbutton').addEventListener("click", function(){
+        printvas('Event type: '+ event.type + ' | Event target: ' + event.target);
+        });
+    document.querySelector('#clearbutton').addEventListener("click", function(){
+        clearvas();
+        });
+    document.querySelector('#playbutton').addEventListener("click", function(){
+        play();
+        });
+    document.querySelector('#resetbutton').addEventListener("click", function(){
+        resetgame();
+        });
+    }
+// Canvas syntax
+// GENERAL: ctx.fillStyle OR ctx.strokeStyle = 'color' AND ctx.lineWidth
+// RECTANGLES: ctx.fillRect OR ctx.strokeRect (a,b,c,d)
+// CIRCLES: ctx.beginPath() --> ctx.arc(x, y, radius, 0, 2*Math.PI); --> ctx.fill() OR ctx.stroke()
+// TEXT: ctx.font = "20px monospace" --> ctx.fillText or ctx.strokeText("message", x, y)
+// FUNCTIONS: ctx.save() --> ctx.translate(x, y) --> draw --> ctx.restore();
 </script>
 </body>
 </html>
-<!--
-        function sum() {
-            var total=0;
-            for (i = 0; i < arguments.length; i++) 
-                {total += arguments[i];}
-            return total;
-        }
-        window.onload=function(){}
-
-    -->
