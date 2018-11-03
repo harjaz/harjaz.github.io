@@ -1,0 +1,112 @@
+<!DOCTYPE HTML>
+<html lang="en>"
+<head>
+    <meta charset="utf-8">
+    <title>
+            Test Page
+    </title>
+    <style>
+    /* Commas for multiple selectors, ".class" , "#id tag" for descendants, "#id>tag" for direct descendants only, "tag:pseudoclass" as in table, */
+    body {
+        color:rgba(0, 0, 50, 1.0); font-family: monospace, fantasy, cursive, sans-serif, serif; text-align: center;
+        background-image:url("https://courses.edx.org/asset-v1:W3Cx+HTML5.0x+1T2017+type@asset+block@cornerpiece.png"); background-position: bottom right; background-repeat: no-repeat; background-attachment:fixed;
+        display: flex;  flex-flow: row wrap; align-items: center; align-content: center; justify-content: space-around;}
+    /* code for adding flex to items makes things worse? #block1, #table1, #drawings, #block2 {flex: 1; }
+    code to fix music player position to top left {position:fixed; top:0px; left:0px} which does not work well with flexbox*/
+    #mainquote {background-image: url("https://us.123rf.com/450wm/rustyphil/rustyphil0805/rustyphil080500073/3112725-large-old-paper-or-parchment-background-texture-with-floral-design.jpg?ver=6");
+    background-size: cover; border-radius: 15px; box-shadow: 0px 0px 10px rgb(0, 0, 50); text-shadow: 0px 0px 1px rgb(0, 0, 50);}
+    #clickdl {color: white; background-color: black; }
+    #block2 {background: lightblue; flex: 0 1 100vw}
+    li {list-style-type:lower-roman; font-size: 0.8rem;}
+    ol {margin-left: 50px; border: 3px solid green;}
+    null { text-decoration: underline overline line-through; font-weight: bold; font-style: italic;}
+    /* Below is table CSS */
+    th, td {border: 1vh solid white; border-collapse:separate; text-align: center; padding:3vh; font-size: 4vh}
+    th {background-color: rgb(150, 150, 255)}
+    table {border: 0.1vh solid black; margin: 0.5vh;}
+    table tr:hover{background-color: yellow; cursor: text} tr:nth-child(odd){background-color: rgb(210, 210, 255)} tr:nth-child(even) {background-color: rgb(230, 230, 255)}
+    /* Below is shape drawing CSS */
+    #rec1 {height:5vh;width:100vw;background-color: red;}
+    #rec2 {height:5vh;width:100vw;background-color: white;}
+    #rec3 {height:5vh;width:100vw;background-color: blue;}
+    #bord1 {width:2vw; height: 2vw; background-color: lightcoral; 
+        border:1vw solid purple; border-radius: 100%; 
+        margin-left: 5.5vw; margin-top: 0.5vh; margin-bottom: 0.5vh;}
+    #bord2 {font-size:5vw; height:5vw; width: 5vw; background-color: crimson; 
+        border-top:5vw solid black;border-bottom:5vw solid darkslategray;border-right:5vw solid lightslategray;border-left:5vw solid grey;
+        margin-bottom: 0.5vh;}
+    /* Content and padding share the same background coolor, so can make content sizeless and color the padding, as in bord3 */
+    </style>
+</head>
+<body>
+<div id="block1">
+    <header><audio id="song" src="https://s1.vocaroo.com/media/download_temp/Vocaroo_s1E8yJ6RMXGg.mp3" controls loop autoplay>File not supported</audio></header>
+    <main>
+    <mark><strong>HELLO</strong> <em>WORLD!</em></mark>
+    <div id="mainquote"><h1><q title="Hello world!">QUOTES</q></h1>
+    <h2><blockquote cite="me">This is a quote</blockquote></h2></div>
+    <h3><code>This is code</code></h3>
+    <ol start="2" reversed>
+        <li>Item on list</li>
+        <li>Item on list</li>
+    </ol>
+    <details>
+            <summary>Expand me!</summary>
+            <p>Secrets!</p>
+    </details>
+    </main>
+    <a href="https://www.google.com" target="_blank">
+        <figure>
+            <img src="https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png" alt="Google Logo" title="Google Logo">
+            <figcaption>Go to <abbr title="Googol">Google</abbr></figcaption>
+        </figure>
+    </a>
+    <a id="clickdl" href="https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png" download="google_logo.png"> Click to download image </a>
+</div>
+<div id="table1">
+    <table border=1>
+    <caption><p>This is a table</p></caption>
+    <colgroup>
+        <col span="1">
+        <col span="1">
+    </colgroup>
+    <thead>
+        <tr>
+            <th>Header1</th>
+            <th>Header2</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Data 1A</td>
+            <td>Data 1B</td>
+        </tr>
+        <tr>
+            <td>Data 2A</td>
+            <td>Data 2B</td>
+        </tr>
+    </tbody>
+    <tfoot>
+        <tr>
+            <td colspan=2>Big Footer</td>
+        </tr>
+    </tfoot>
+    </table>
+</div>
+<div id="drawings1">
+        <div id="rec1"></div>
+        <div id="rec2"></div>
+        <div id="rec3"></div>
+</div>
+<div id="drawings2">
+        <div id="bord1">&nbsp;</div>
+        <div id="bord2">&amp;</div>
+</div>
+<div id="block2">
+    <a href="#block1">Go to top</a>
+</div>
+<div id="codepen">
+    <!--<hr> <p id="codepen" data-height="290" data-theme-id="dark" data-slug-hash="qQBNdL" data-default-tab="html" data-user="huhuhuhuhuhu" data-pen-title="Test Page" class="codepen"> See the Pen <a href="https://codepen.io/huhuhuhuhuhu/pen/qQBNdL/">Test Page</a> by Haares Mirzan (<a href="https://codepen.io/huhuhuhuhuhu">@huhuhuhuhuhu</a>) on <a href="https://codepen.io">CodePen</a>.</p> <script async src="https://static.codepen.io/assets/embed/ei.js"></script> --> 
+</div>
+</body>
+</html>
