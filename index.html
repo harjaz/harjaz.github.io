@@ -206,13 +206,20 @@
         location.reload(),false
     });
 }
-// Canvas syntax
-// GENERAL: ctx.fillStyle OR ctx.strokeStyle = 'color' AND ctx.lineWidth
-// RECTANGLES: ctx.fillRect OR ctx.strokeRect (a,b,c,d)
-// CIRCLES: ctx.beginPath() --> ctx.arc(x, y, radius, 0, 2*Math.PI); --> ctx.fill() OR ctx.stroke()
-// TEXT: ctx.font = "20px monospace" --> ctx.fillText or ctx.strokeText("message", x, y)
-// FUNCTIONS: ctx.save() --> ctx.translate(x, y) --> draw --> ctx.restore();
 </script>
 </body>
 </html>
-<!--        document.querySelector("#hascanvas").insertAdjacentHTML("afterbegin",<p id="instruc">Use arrow keys to move and press control to shoot</p>) -->
+<!--
+    Add text: document.querySelector("#ID").insertAdjacentHTML("afterbegin",<p>TEXT</p>)
+    JS to modify HTML elements: elem=document.createElement("tagname"); elem.properties = changes ; document.body.append(elem);
+    Return function: "Return condition ? output : condition ? output : output" to test conditions to determine what to return 
+    Arrays: use array.push() to add element, array.pop() to delete last, and array.splice(index #, how many to delete) to delete; array.length for length
+    Strings: string.length works, but other array properties don't, need to use string.substring(start,end) to select the indexes to re-define as variable, and use +string to combine
+    
+    Canvas syntax
+    GENERAL: ctx.fillStyle OR ctx.strokeStyle = 'color' AND ctx.lineWidth
+    RECTANGLES: ctx.fillRect OR ctx.strokeRect (a,b,c,d)
+    CIRCLES: ctx.beginPath() -> ctx.arc(x, y, radius, 0, 2*Math.PI); -> ctx.fill() OR ctx.stroke()
+    TEXT: ctx.font = "20px monospace" -> ctx.fillText or ctx.strokeText("message", x, y)
+    FUNCTIONS: ctx.save() -> ctx.translate(x, y) -> draw -> ctx.restore(); 
+    MOUSE: mouseevent.clientX or Y, use canvas.getBoundingClientRect().left and .top to correct for position on canvas -->
