@@ -53,7 +53,7 @@
         });
     // Canvas JS
     var canvas, ctx, w, h, z;
-    var arrowup=false; var arrowdown=false; var arrowright=false; var arrowleft=false; var control=false; var direction="down"
+    var arrowup=false; var arrowdown=false; var arrowright=false; var arrowleft=false; var control=false; var direction="down"; var starttime = new Date();; var endtime=new Date();
     var player = {x:350,y:200,height:20,width:10,color:'green',xvel:0,yvel:0};
     var balls=makeballs()
     var thisbullet = {};
@@ -165,7 +165,9 @@
         for (var i=0; i<balls.length; i++){
             if (balls[i].x+balls[i].radius >= player.x && balls[i].x-balls[i].radius <= player.x+player.width && balls[i].y+balls[i].radius >= player.y && balls[i].y-balls[i].radius <= player.y+player.height){
                 clearvas();
-                printvas("YOU DIED!");
+                endtime=new Date();
+                gametime = endtime-starttime;
+                printvas("YOU DIED! It took: " + gametime+ " milliseconds.");
                 return(true)
         }}
         for (var i = 0; i < bullets.length ; i++) {
@@ -177,11 +179,12 @@
         }}}
         if (balls.length==0){
                 clearvas();
-                printvas("YOU WON!");
+                endtime=new Date();
+                gametime = endtime-starttime;
+                printvas("YOU WON! It took: " + gametime + " milliseconds.");
                 return(true)
         }}
     function play() {
-        document.querySelector('#instruc').innerHTML="<p>Use arrows to move and CTRL to fire</p>";
         clearvas();
         drawplayer(player);
         drawballs(balls);
@@ -201,6 +204,8 @@
         clearvas();
         });
     document.querySelector('#playbutton').addEventListener("click", function(){
+        starttime = new Date();
+        document.querySelector('#instruc').innerHTML="<p>Use arrows to move and CTRL to fire</p>";
         play();
         });
     document.querySelector('#resetbutton').addEventListener("click", function(){
