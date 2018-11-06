@@ -49,28 +49,28 @@
         });
     // Canvas JS
     var canvas, ctx, w, h, z;
-    var arrowup=false; var arrowdown=false; var arrowright=false; var arrowleft=false; var control=false;
+    var arrowup=false; var arrowdown=false; var arrowright=false; var arrowleft=false; var control=false; var direction="up"
     var player = {x:350,y:200,height:20,width:10,color:'red',xvel:0,yvel:0};
     var balls=makeballs()
-    var bullets = [];
     var thisbullet = {};
+    var bullets = [];
     canvas = document.querySelector("#myCanvas");
         ctx = canvas.getContext('2d');
         ctx.font = "20px monospace";
         w = canvas.width; h=canvas.height; z=25;
     function funckeydown(event){
-        if (event=='ArrowUp'){arrowup=true};
-        if (event=='ArrowDown'){arrowdown=true};
-        if (event=='ArrowRight'){arrowright=true};
-        if (event=='ArrowLeft'){arrowleft=true};
-        if (event=='Control'){control=true};
+        if (event.key=='ArrowUp'){arrowup=true};
+        if (event.key=='ArrowDown'){arrowdown=true};
+        if (event.key=='ArrowRight'){arrowright=true};
+        if (event.key=='ArrowLeft'){arrowleft=true};
+        if (event.key=='Control'){control=true};
         }
     function funckeyup(event) {
-        if (event=='ArrowUp'){arrowup=false};
-        if (event=='ArrowDown'){arrowdown=false};
-        if (event=='ArrowRight'){arrowright=false};
-        if (event=='ArrowLeft'){arrowleft=false};
-        if (event=='Control'){control=false};
+        if (event.key=='ArrowUp'){arrowup=false};
+        if (event.key=='ArrowDown'){arrowdown=false};
+        if (event.key=='ArrowRight'){arrowright=false};
+        if (event.key=='ArrowLeft'){arrowleft=false};
+        if (event.key=='Control'){control=false};
         }
     function bullettemplate(){
         return {x:0,y:0,radius:5,color:'yellow',xvel:0,yvel:0};
@@ -83,13 +83,15 @@
         ctx.clearRect(0,0,w,h);
         z = 25; 
         }
-    function resetgame(){
-        cancelAnimationFrame(requestAnimationFrame(play));
-        player.x=350; player.y=200; 
-        var balls=makeballs()
-        bullets=[];
-        clearvas();
-    }
+//    function resetgame(){
+//       cancelAnimationFrame(requestAnimationFrame(play));
+//        var arrowup=false; var arrowdown=false; var arrowright=false; var arrowleft=false; var control=false; var direction="up"
+//        var player = {x:350,y:200,height:20,width:10,color:'red',xvel:0,yvel:0};
+//        var balls=makeballs()
+//        var thisbullet = {};
+//        var bullets = [];
+//        clearvas();
+//    }
     function makeballs(){
         ballarray=[];
         for (var i=0; i<5; i++) {
@@ -128,11 +130,11 @@
         }
         }
     function moveplayer(player){
-        //allow movement based on arrow keys and trigger shoot function with control;
-        if (arrowup){player.y -= 15
-        } else if (arrowdown){player.y += 15
-        } else if (arrowright){player.x += 15
-        } else if (arrowleft){player.x -= 15};
+        //allow movement based on arrow keys, set last moved direction, and trigger shoot function with control;
+        if (arrowup){player.y -= 15;direction="up"
+        } else if (arrowdown){player.y += 15;direction="down"
+        } else if (arrowright){player.x += 15;direction="right"
+        } else if (arrowleft){player.x -= 15;direction="left"};
         if (control){shoot();};
         //check for canvas boundaries
         if (player.x+player.width > w) {player.x=w-player.width};
@@ -144,23 +146,12 @@
             thisbullet = bullettemplate();
             thisbullet.x=player.x;
             thisbullet.y=player.y;
-            if (arrowup){thisbullet.yvel=-5
-            } else if (arrowdown){thisbullet.yvel=5
-            } else if (arrowright){thisbullet.xvel=5
-            } else if (arrowleft){thisbullet.xvel=-5};
+            if (direction=="up"){thisbullet.yvel=-5
+            } else if (direction=="down"){thisbullet.yvel=5
+            } else if (direction=="right"){thisbullet.xvel=5
+            } else if (direction=="left"){thisbullet.xvel=-5};
             bullets.push(thisbullet);
         }
-    function fourshoot(direction){
-            thisbullet = bullet;
-            thisbullet.x=player.x;
-            thisbullet.y=player.y;
-            for (i=0; i<4; i++) {
-                if (i==0){thisbullet.yvel=-5
-                } else if (i==1){thisbullet.yvel=5
-                } else if (i==2){thisbullet.xvel=5
-                } else if (i==3){thisbullet.xvel=-5};
-                bullets.push(thisbullet);
-        }}
     function moveballs(balls){
         for (var i=0; i<balls.length; i++){
             balls[i].x += balls[i].xvel;
@@ -217,8 +208,8 @@
         play();
         });
     document.querySelector('#resetbutton').addEventListener("click", function(){
-        resetgame();
-        });
+        location.reload(),false
+    });
 }
 // Canvas syntax
 // GENERAL: ctx.fillStyle OR ctx.strokeStyle = 'color' AND ctx.lineWidth
