@@ -16,7 +16,6 @@
 </head>
 <body>
     <div id="banner"><p>JavaScript Test Page</p></div>
-<!--   <div><button id="testbutton">Test console</button></div> --> 
     <div><p>Type for key codes</p><br><input id="field1" /><br><br></div>
     <div> <b>Pizza calculator</b>
         <p id="pizzacalc">
@@ -27,7 +26,6 @@
             </p>
         <button id="pizzabutton">Calculate!</button>
         </div>
-<!--    <div id="console"></div> -->
     <div><button id="canvasbutton">Test canvas</button>
         <button id="clearbutton">Clear canvas</button>
         <button id="playbutton">Play</button>
@@ -37,12 +35,6 @@
 <script>
     window.onload=function(){
     var blankpizzacalc = document.querySelector('#pizzacalc').innerHTML;
-//    function printer(message){
-//        document.querySelector('#console').insertAdjacentHTML("beforeend",message+"<br>")
-//        }
-//    document.querySelector('#testbutton').addEventListener("click", function(){
-//        printer('Event type: '+ event.type + ' | Event target: ' + event.target)
-//        });
     document.querySelector('#field1').addEventListener('keydown', function(){
         printvas('Key: ' + event.key + ' Code: ' + event.keyCode)
         });
@@ -56,17 +48,33 @@
         document.querySelector('#pizzacalc').innerHTML=blankpizzacalc;
         });
     // Canvas JS
-    var canvas, ctx, w, h, z, keys=[];
+    var canvas, ctx, w, h, z;
+    var arrowup=false; var arrowdown=false; var arrowright=false; var arrowleft=false; var control=false;
     var player = {x:350,y:200,height:20,width:10,color:'red',xvel:0,yvel:0};
     var balls=makeballs()
-    var bullet = {x:0,y:0,radius:5,color:'yellow',xvel:0,yvel:0};
     var bullets = [];
     var thisbullet = {};
-    var direction = 'ArrowUp';
     canvas = document.querySelector("#myCanvas");
         ctx = canvas.getContext('2d');
         ctx.font = "20px monospace";
         w = canvas.width; h=canvas.height; z=25;
+    function funckeydown(event){
+        if (event=='ArrowUp'){arrowup=true};
+        if (event=='ArrowDown'){arrowdown=true};
+        if (event=='ArrowRight'){arrowright=true};
+        if (event=='ArrowLeft'){arrowleft=true};
+        if (event=='Control'){control=true};
+        }
+    function funckeyup(event) {
+        if (event=='ArrowUp'){arrowup=false};
+        if (event=='ArrowDown'){arrowdown=false};
+        if (event=='ArrowRight'){arrowright=false};
+        if (event=='ArrowLeft'){arrowleft=false};
+        if (event=='Control'){control=false};
+        }
+    function bullettemplate(){
+        return {x:0,y:0,radius:5,color:'yellow',xvel:0,yvel:0};
+    }
     function printvas(message){
         ctx.fillText(message,0,z);
         z += 25;
@@ -119,29 +127,27 @@
             ctx.restore();
         }
         }
-    function moveplayer(player){ //allow movement based on arrow keys and trigger shoot function with control; check for canvas boundaries; set direction for shooting
-//        if (direction != 'ArrowUp' || direction != 'ArrowDown' || direction != 'ArrowRight' || direction != 'ArrowLeft'){direction='ArrowUp'};
-        for (var i = 0; i < keys.length ; i++) {
-            if (keys[i]=='ArrowUp'){player.y -= 15; direction=keys[i];};
-            if (keys[i]=='ArrowDown'){player.y += 15;direction=keys[i];};
-            if (keys[i]=='ArrowRight'){player.x += 15;direction=keys[i];};
-            if (keys[i]=='ArrowLeft'){player.x -= 15;direction=keys[i];};
-            if (keys[i]=='Control'){fourshoot(direction);};
-        }
+    function moveplayer(player){
+        //allow movement based on arrow keys and trigger shoot function with control;
+        if (arrowup){player.y -= 15
+        } else if (arrowdown){player.y += 15
+        } else if (arrowright){player.x += 15
+        } else if (arrowleft){player.x -= 15};
+        if (control){shoot();};
+        //check for canvas boundaries
         if (player.x+player.width > w) {player.x=w-player.width};
         if (player.x < 0) {player.x=0};
         if (player.y+player.height > h) {player.y=h-player.height}
         if (player.y < 0) {player.y=0}
-        keys = [];
         }
-    function shoot(direction){
-            thisbullet = bullet;
+    function shoot(){
+            thisbullet = bullettemplate();
             thisbullet.x=player.x;
             thisbullet.y=player.y;
-            if (direction=='ArrowUp'){thisbullet.yvel=-5
-            } else if (direction=='ArrowDown'){thisbullet.yvel=5
-            } else if (direction=='ArrowRight'){thisbullet.xvel=5
-            } else if (direction=='ArrowLeft'){thisbullet.xvel=-5};
+            if (arrowup){thisbullet.yvel=-5
+            } else if (arrowdown){thisbullet.yvel=5
+            } else if (arrowright){thisbullet.xvel=5
+            } else if (arrowleft){thisbullet.xvel=-5};
             bullets.push(thisbullet);
         }
     function fourshoot(direction){
@@ -199,9 +205,8 @@
         if (deathcheck(player,balls)==true){return}
         requestAnimationFrame(play);
         }
-    window.addEventListener('keydown', function(){
-        keys.push(event.key)
-        });
+    window.addEventListener('keydown', funckeydown,false);
+    window.addEventListener('keyup', funckeyup,false);
     document.querySelector('#canvasbutton').addEventListener("click", function(){
         printvas('Event type: '+ event.type + ' | Event target: ' + event.target);
         });
@@ -214,7 +219,7 @@
     document.querySelector('#resetbutton').addEventListener("click", function(){
         resetgame();
         });
-    }
+}
 // Canvas syntax
 // GENERAL: ctx.fillStyle OR ctx.strokeStyle = 'color' AND ctx.lineWidth
 // RECTANGLES: ctx.fillRect OR ctx.strokeRect (a,b,c,d)
