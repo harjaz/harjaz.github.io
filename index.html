@@ -58,7 +58,6 @@
     // Canvas JS
     var canvas, ctx, w, h, z, keys=[];
     var player = {x:350,y:200,height:20,width:10,color:'red',xvel:0,yvel:0};
-//    var ball = {x:350, y:500, radius:20, color:'blue', xvel:3+Math.random()*2, yvel:3+Math.random()*2};
     var balls=makeballs()
     var bullet = {x:0,y:0,radius:5,color:'yellow',xvel:0,yvel:0};
     var bullets = [];
@@ -80,7 +79,6 @@
         cancelAnimationFrame(requestAnimationFrame(play));
         player.x=350; player.y=200; 
         var balls=makeballs()
-//        ball.x=350; ball.y=500; ball.xvel=3+Math.random()*2;ball.yvel=3+Math.random()*2;
         bullets=[];
         clearvas();
     }
@@ -99,15 +97,6 @@
         ctx.fillRect (0,0,player.width,player.height)
         ctx.restore();
         }
-//    function drawball(ball){
-//       ctx.save();
-//        ctx.translate(ball.x,ball.y);
-//        ctx.fillStyle=ball.color;
-//        ctx.beginPath();
-//        ctx.arc(0, 0, ball.radius, 0, 2*Math.PI);
-//        ctx.fill();
-//        ctx.restore();
-//        }
     function drawballs(balls){
         for (var i=0; i<balls.length; i++){
             ctx.save();
@@ -130,14 +119,14 @@
             ctx.restore();
         }
         }
-    function moveplayer(player){
+    function moveplayer(player){ //allow movement based on arrow keys and trigger shoot function with control; check for canvas boundaries; set direction for shooting
 //        if (direction != 'ArrowUp' || direction != 'ArrowDown' || direction != 'ArrowRight' || direction != 'ArrowLeft'){direction='ArrowUp'};
         for (var i = 0; i < keys.length ; i++) {
-            if (keys[i]=='ArrowUp'){player.y -= 5; direction=keys[i];};
-            if (keys[i]=='ArrowDown'){player.y += 5;direction=keys[i];};
-            if (keys[i]=='ArrowRight'){player.x += 5;direction=keys[i];};
-            if (keys[i]=='ArrowLeft'){player.x -= 5;direction=keys[i];};
-            if (keys[i]=='Control'){shoot(direction);};
+            if (keys[i]=='ArrowUp'){player.y -= 15; direction=keys[i];};
+            if (keys[i]=='ArrowDown'){player.y += 15;direction=keys[i];};
+            if (keys[i]=='ArrowRight'){player.x += 15;direction=keys[i];};
+            if (keys[i]=='ArrowLeft'){player.x -= 15;direction=keys[i];};
+            if (keys[i]=='Control'){fourshoot(direction);};
         }
         if (player.x+player.width > w) {player.x=w-player.width};
         if (player.x < 0) {player.x=0};
@@ -155,12 +144,17 @@
             } else if (direction=='ArrowLeft'){thisbullet.xvel=-5};
             bullets.push(thisbullet);
         }
-//    function moveball(ball){
-//       ball.x += ball.xvel;
-//        ball.y += ball.yvel;
-//        if (ball.x+ball.radius >= w || ball.x-ball.radius <= 0){ ball.xvel = -ball.xvel}
-//        if (ball.y+ball.radius >= h || ball.y-ball.radius <= 0){ ball.yvel = -ball.yvel}
-//        }
+    function fourshoot(direction){
+            thisbullet = bullet;
+            thisbullet.x=player.x;
+            thisbullet.y=player.y;
+            for (i=0; i<4; i++) {
+                if (i==0){thisbullet.yvel=-5
+                } else if (i==1){thisbullet.yvel=5
+                } else if (i==2){thisbullet.xvel=5
+                } else if (i==3){thisbullet.xvel=-5};
+                bullets.push(thisbullet);
+        }}
     function moveballs(balls){
         for (var i=0; i<balls.length; i++){
             balls[i].x += balls[i].xvel;
@@ -187,18 +181,19 @@
             for (var j=0; j<balls.length;j++){
                 if (balls[j].x-balls[j].radius <= thisbullet.x+thisbullet.radius && thisbullet.x-thisbullet.radius <= balls[j].x+balls[j].radius &&
                 balls[j].y+balls[j].radius >= thisbullet.y-thisbullet.radius && thisbullet.y+thisbullet.radius >= balls[j].y-balls[j].radius){
-                    clearvas();
-                    printvas("YOU WON!");
-                    return(true)
-        }}}}
+                    balls.splice(j,1)
+        }}}
+        if (balls.length==0){
+                clearvas();
+                printvas("YOU WON!");
+                return(true)
+        }}
     function play() {
         clearvas();
         drawplayer(player);
-//        drawball(ball);
         drawballs(balls);
         drawbullets(bullets);
         moveplayer(player);
-//        moveball(ball);
         moveballs(balls)
         movebullets(bullets);
         if (deathcheck(player,balls)==true){return}
