@@ -58,10 +58,12 @@
     // Canvas JS
     var canvas, ctx, w, h, z, keys=[];
     var player = {x:350,y:200,height:20,width:10,color:'red',xvel:0,yvel:0};
-    var ball = {x:350, y:500, radius:20, color:'blue', xvel:(Math.random() * (5 - 3) + 3), yvel:(Math.random() * (5 - 3) + 3)};
+//    var ball = {x:350, y:500, radius:20, color:'blue', xvel:3+Math.random()*2, yvel:3+Math.random()*2};
+    var balls=makeballs()
     var bullet = {x:0,y:0,radius:5,color:'yellow',xvel:0,yvel:0};
-    var direction = 'ArrowUp';
     var bullets = [];
+    var thisbullet = {};
+    var direction = 'ArrowUp';
     canvas = document.querySelector("#myCanvas");
         ctx = canvas.getContext('2d');
         ctx.font = "20px monospace";
@@ -76,8 +78,19 @@
         }
     function resetgame(){
         cancelAnimationFrame(requestAnimationFrame(play));
-        player.x=350; player.y=200; ball.x=350; ball.y=500; ball.xvel=(Math.random() * (5 - 3) + 3);ball.yvel=(Math.random() * (5 - 3) + 3);bullets=[];
+        player.x=350; player.y=200; 
+        var balls=makeballs()
+//        ball.x=350; ball.y=500; ball.xvel=3+Math.random()*2;ball.yvel=3+Math.random()*2;
+        bullets=[];
         clearvas();
+    }
+    function makeballs(){
+        ballarray=[];
+        for (var i=0; i<5; i++) {
+            newball={x:350, y:500, radius:20, color:'blue', xvel:3+Math.random()*2, yvel:3+Math.random()*2};
+            ballarray.push(newball)
+        }
+        return ballarray
     }
     function drawplayer(player){
         ctx.save();
@@ -86,14 +99,25 @@
         ctx.fillRect (0,0,player.width,player.height)
         ctx.restore();
         }
-    function drawball(ball){
-        ctx.save();
-        ctx.translate(ball.x,ball.y);
-        ctx.fillStyle=ball.color;
-        ctx.beginPath();
-        ctx.arc(0, 0, ball.radius, 0, 2*Math.PI);
-        ctx.fill();
-        ctx.restore();
+//    function drawball(ball){
+//       ctx.save();
+//        ctx.translate(ball.x,ball.y);
+//        ctx.fillStyle=ball.color;
+//        ctx.beginPath();
+//        ctx.arc(0, 0, ball.radius, 0, 2*Math.PI);
+//        ctx.fill();
+//        ctx.restore();
+//        }
+    function drawballs(balls){
+        for (var i=0; i<balls.length; i++){
+            ctx.save();
+            ctx.translate(balls[i].x,balls[i].y);
+            ctx.fillStyle=balls[i].color;
+            ctx.beginPath();
+            ctx.arc(0, 0, balls[i].radius, 0, 2*Math.PI);
+            ctx.fill();
+            ctx.restore();
+        }
         }
     function drawbullets(bullets){
         for (var i = 0; i < bullets.length ; i++) {
@@ -131,11 +155,19 @@
             } else if (direction=='ArrowLeft'){thisbullet.xvel=-5};
             bullets.push(thisbullet);
         }
-    function moveball(ball){
-        ball.x += ball.xvel;
-        ball.y += ball.yvel;
-        if (ball.x+ball.radius >= w || ball.x-ball.radius <= 0){ ball.xvel = -ball.xvel}
-        if (ball.y+ball.radius >= h || ball.y-ball.radius <= 0){ ball.yvel = -ball.yvel}
+//    function moveball(ball){
+//       ball.x += ball.xvel;
+//        ball.y += ball.yvel;
+//        if (ball.x+ball.radius >= w || ball.x-ball.radius <= 0){ ball.xvel = -ball.xvel}
+//        if (ball.y+ball.radius >= h || ball.y-ball.radius <= 0){ ball.yvel = -ball.yvel}
+//        }
+    function moveballs(balls){
+        for (var i=0; i<balls.length; i++){
+            balls[i].x += balls[i].xvel;
+            balls[i].y += balls[i].yvel;
+            if (balls[i].x+balls[i].radius >= w || balls[i].x-balls[i].radius <= 0){ balls[i].xvel = -balls[i].xvel}
+            if (balls[i].y+balls[i].radius >= h || balls[i].y-balls[i].radius <= 0){balls[i].yvel = -balls[i].yvel}
+        }
         }
     function movebullets(bullets){
         for (var i = 0; i < bullets.length ; i++) {
@@ -143,30 +175,33 @@
         bullets[i].y += bullets[i].yvel;
         }
         }
-    function deathcheck(player,ball){
-        if (ball.x+ball.radius >= player.x && ball.x-ball.radius <= player.x+player.width && ball.y+ball.radius >= player.y && ball.y-ball.radius <= player.y+player.height){
-            clearvas();
-            printvas("YOU DIED!");
-            return(true)
-        }
+    function deathcheck(player,balls){
+        for (var i=0; i<balls.length; i++){
+            if (balls[i].x+balls[i].radius >= player.x && balls[i].x-balls[i].radius <= player.x+player.width && balls[i].y+balls[i].radius >= player.y && balls[i].y-balls[i].radius <= player.y+player.height){
+                clearvas();
+                printvas("YOU DIED!");
+                return(true)
+        }}
         for (var i = 0; i < bullets.length ; i++) {
-            if (ball.x-ball.radius <= bullets[i].x+bullets[i].radius && bullets[i].x-bullets[i].radius <= ball.x+ball.radius &&
-            ball.y+ball.radius >= bullets[i].y-bullets[i].radius && bullets[i].y+bullets[i].radius >= ball.y-ball.radius){
-            clearvas();
-            printvas("YOU WON!");
-            return(true)
-        }
-        }
-        }
+            thisbullet=bullets[i]
+            for (var j=0; j<balls.length;j++){
+                if (balls[j].x-balls[j].radius <= thisbullet.x+thisbullet.radius && thisbullet.x-thisbullet.radius <= balls[j].x+balls[j].radius &&
+                balls[j].y+balls[j].radius >= thisbullet.y-thisbullet.radius && thisbullet.y+thisbullet.radius >= balls[j].y-balls[j].radius){
+                    clearvas();
+                    printvas("YOU WON!");
+                    return(true)
+        }}}}
     function play() {
         clearvas();
         drawplayer(player);
-        drawball(ball);
+//        drawball(ball);
+        drawballs(balls);
         drawbullets(bullets);
         moveplayer(player);
-        moveball(ball);
+//        moveball(ball);
+        moveballs(balls)
         movebullets(bullets);
-        if (deathcheck(player,ball)==true){return}
+        if (deathcheck(player,balls)==true){return}
         requestAnimationFrame(play);
         }
     window.addEventListener('keydown', function(){
