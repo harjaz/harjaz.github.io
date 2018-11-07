@@ -36,7 +36,7 @@
         <button class="button" id="playbutton">Play</button>
         <button class="button" id="resetbutton">Reset</button>
         <div id="balldisplay"> Ball count: 10</div>
-        <input type="range" min="1" max="50" value="10" id="ballrange">
+        <input type="range" min="1" max="1000" value="10" id="ballrange">
         </div>
     <div><p id="instruc"></p>
     <canvas id="myCanvas" width="700" height="700"></canvas></div>
@@ -139,7 +139,6 @@
             }}
         }
         };
-
 // JS to define factory function for bullets
     function bulletfactory(){
         return {x:0,y:0,radius:5,color:'blue',xvel:0,yvel:0,

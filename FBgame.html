@@ -1,0 +1,56 @@
+<!DOCTYPE HTML>
+<html lang="en>"
+<head>
+    <meta charset="utf-8">
+    <title>FB Game</title>
+    <style></style>
+</head>
+<body>
+    <script src="https://connect.facebook.net/en_US/fbinstant.6.2.js"></script>
+    <script src="lib/phaser-facebook-instant-games.js"></script>
+<script>
+FBInstant.initializeAsync().then(function() {        
+    var config = {
+        type: Phaser.AUTO,
+        width: window.innerWidth,
+        height: window.innerHeight
+    };
+    new Phaser.Game(config);
+    });
+
+// Informs the SDK of loading progress
+class Preloader extends Phaser.Scene {
+    constructor ()
+    {
+        super('Preloader');
+    }
+    preload ()
+        {
+            this.facebook.once('startgame', this.startGame, this);
+            this.facebook.showLoadProgress(this); //FBInstant.setLoadingProgress(progress);
+        }
+        startGame ()
+        {
+            this.scene.start('MainMenu');
+        }
+    }
+
+// Once all assets are loaded, tells the SDK 
+// to end loading view and start the game
+FBInstant.startGameAsync().then(function() {
+    // Retrieving context and player information can only be done
+    // once startGameAsync() resolves
+    var contextId = FBInstant.context.getID();
+    var contextType = FBInstant.context.getType();
+    var playerName = FBInstant.player.getName();
+    var playerPic = FBInstant.player.getPhoto();
+    var playerId = FBInstant.player.getID();
+
+    // Once startGameAsync() resolves it also means the loading view has 
+    // been removed and the user can see the game viewport
+    game.start();
+});
+
+</script>
+</body>
+</html>
