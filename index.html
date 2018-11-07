@@ -126,20 +126,33 @@
         shoot:function(){
             if (arrowup || arrowdown || arrowright || arrowleft){
             if(new Date() - lastbullet >= 200){
-            thisbullet = bulletfactory();
-//            thisbullet = bullettemplate();
-            thisbullet.x=player.x;
-            thisbullet.y=player.y;
-            if (arrowup){thisbullet.yvel=-20
-            } else if (arrowdown){thisbullet.yvel=20
-            } else if (arrowright){thisbullet.xvel=20
-            } else if (arrowleft){thisbullet.xvel=-20};
+                thisbullet = bulletfactory();
+                thisbullet.x=player.x;
+                thisbullet.y=player.y;
+                if (arrowright && arrowdown && arrowleft) {thisbullet.yvel=20
+                } else if (arrowup && arrowright && arrowleft) {thisbullet.yvel=-20
+                } else if (arrowup && arrowright && arrowdown) {thisbullet.xvel=20
+                } else if (arrowup && arrowdown && arrowleft) {thisbullet.xvel=-20
+                } else if (arrowup && arrowright){thisbullet.yvel=-20;thisbullet.xvel=20
+                } else if (arrowup && arrowleft){thisbullet.yvel=-20;thisbullet.xvel=-20
+                } else if (arrowdown && arrowright){thisbullet.xvel=20;thisbullet.yvel=20
+                } else if (arrowdown && arrowleft){thisbullet.xvel=-20;thisbullet.yvel=20
+                } else if (arrowup){thisbullet.yvel=-20
+                } else if (arrowdown){thisbullet.yvel=20
+                } else if (arrowright){thisbullet.xvel=20
+                } else if (arrowleft){thisbullet.xvel=-20};
             bullets.push(thisbullet);
             lastbullet = new Date()
             shootsound.play();
             }}
         }
         };
+
+//            if (arrowup){thisbullet.yvel=-20
+//            } else if (arrowdown){thisbullet.yvel=20
+//            } else if (arrowright){thisbullet.xvel=20
+//            } else if (arrowleft){thisbullet.xvel=-20};
+
 // JS to define factory function for bullets
     function bulletfactory(){
         return {x:0,y:0,radius:5,color:'blue',xvel:0,yvel:0,
