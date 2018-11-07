@@ -20,7 +20,9 @@
 <body>
     <div id="banner"><p>JavaScript Test Page</p></div>
     <div> Type for key codes
-            <input id="field1" size='5' /></div>
+            <input id="field1" size='5' />
+            <audio id="song" src="https://s1.vocaroo.com/media/download_temp/Vocaroo_s1E8yJ6RMXGg.mp3" loop autoplay></audio>
+            </div>
     <div id="pizzacalc">
         <b>Pizza calculator</b>
         Diameter (in) <input id="diam1" size='5'/>
@@ -38,6 +40,7 @@
         </div>
     <div><p id="instruc"></p>
     <canvas id="myCanvas" width="700" height="700"></canvas></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.0.15/howler.js"></script> <!-- Howler library for audio-->
 <script>
     window.onload=function(){
     var blankpizzacalc = document.querySelector('#pizzacalc').innerHTML;
@@ -53,19 +56,32 @@
         printvas( worth + ' square inches of pizza per dollar');
         document.querySelector('#pizzacalc').innerHTML=blankpizzacalc;
         });
-    // Canvas JS
+    // JS to create canvas variables and setup canvas
     var canvas, ctx, w, h, z;
-    var arrowup=false; var arrowdown=false; var arrowright=false; var arrowleft=false;
-    var letterw=false; var lettera=false; var letters=false; var letterd=false;
+    var arrowup=false; var arrowdown=false; var arrowright=false; var arrowleft=false; var letterw=false; var lettera=false; var letters=false; var letterd=false;
     var direction="down"; var starttime = new Date(); var endtime=new Date(); var lastbullet=0; ballcount=10
-    var player = {x:350,y:200,height:20,width:20,color:'green',xvel:0,yvel:0};
     var balls=[];
     var thisbullet = {};
     var bullets = [];
+    shootsound = new Howl({
+      src: ['https://s1.vocaroo.com/media/download_temp/Vocaroo_s1iYicmg1w3y.mp3']
+    });
+    deathsound = new Howl({
+      src: ['https://s1.vocaroo.com/media/download_temp/Vocaroo_s18if94gNzje.mp3']
+    });
     canvas = document.querySelector("#myCanvas");
         ctx = canvas.getContext('2d');
         ctx.font = "20px monospace";
         w = canvas.width; h=canvas.height; z=25;
+    // Functions for printing/clearing canvas and recognizing keyboard input
+    function printvas(message){
+        ctx.fillText(message,0,z);
+        z += 25;
+        }
+    function clearvas(){
+        ctx.clearRect(0,0,w,h);
+        z = 25; 
+        }
     function funckeydown(event){
         if (event.key=='ArrowUp'){arrowup=true};
         if (event.key=='ArrowDown'){arrowdown=true};
@@ -86,70 +102,32 @@
         if (event.key == "s" || event.key == "S") {letters=false}; 
         if (event.key == "d" || event.key == "D") {letterd=false}; 
         }
-    function bullettemplate(){
-        return {x:0,y:0,radius:5,color:'blue',xvel:0,yvel:0};
-    }
-    function printvas(message){
-        ctx.fillText(message,0,z);
-        z += 25;
-        }
-    function clearvas(){
-        ctx.clearRect(0,0,w,h);
-        z = 25; 
-        }
-    function makeballs(ballcount){
-        ballarray=[];
-        for (var i=0; i<ballcount; i++) {
-            newball={x:350, y:500, radius:20, color:'red', xvel:-5+Math.random()*10, yvel:-5+Math.random()*10};
-            ballarray.push(newball)
-        }
-        return ballarray
-    }
-    function drawplayer(player){
-        ctx.save();
-        ctx.translate(player.x,player.y);
-        ctx.fillStyle=player.color;
-        ctx.fillRect (0,0,player.width,player.height)
-        ctx.restore();
-        }
-    function drawballs(balls){
-        for (var i=0; i<balls.length; i++){
+    // JS to define player and its methods
+    var player = {x:350,y:200,height:20,width:20,color:'green',xvel:0,yvel:0,
+        draw:function(){
             ctx.save();
-            ctx.translate(balls[i].x,balls[i].y);
-            ctx.fillStyle=balls[i].color;
-            ctx.beginPath();
-            ctx.arc(0, 0, balls[i].radius, 0, 2*Math.PI);
-            ctx.fill();
+            ctx.translate(player.x,player.y);
+            ctx.fillStyle=player.color;
+            ctx.fillRect (0,0,player.width,player.height)
             ctx.restore();
-        }
-        }
-    function drawbullets(bullets){
-        for (var i = 0; i < bullets.length ; i++) {
-            ctx.save();
-            ctx.translate(bullets[i].x,bullets[i].y);
-            ctx.fillStyle=bullets[i].color;
-            ctx.beginPath();
-            ctx.arc(0, 0, bullets[i].radius, 0, 2*Math.PI);
-            ctx.fill();
-            ctx.restore();
-        }
-        }
-    function moveplayer(player){
-        //allow movement based on WASD;
-        if (letterw){player.y -= 10};
-        if (letters){player.y += 10}; 
-        if (letterd){player.x += 10};
-        if (lettera){player.x -= 10};
-        //check for canvas boundaries
-        if (player.x+player.width > w) {player.x=w-player.width};
-        if (player.x < 0) {player.x=0};
-        if (player.y+player.height > h) {player.y=h-player.height}
-        if (player.y < 0) {player.y=0}
-        }
-    function shoot(){
-        if (arrowup || arrowdown || arrowright || arrowleft){
+        },
+        move:function(){
+            //allow movement based on WASD;
+            if (letterw){player.y -= 10};
+            if (letters){player.y += 10}; 
+            if (letterd){player.x += 10};
+            if (lettera){player.x -= 10};
+            //check for canvas boundaries
+            if (player.x+player.width > w) {player.x=w-player.width};
+            if (player.x < 0) {player.x=0};
+            if (player.y+player.height > h) {player.y=h-player.height}
+            if (player.y < 0) {player.y=0}
+        },
+        shoot:function(){
+            if (arrowup || arrowdown || arrowright || arrowleft){
             if(new Date() - lastbullet >= 200){
-            thisbullet = bullettemplate();
+            thisbullet = bulletfactory();
+//            thisbullet = bullettemplate();
             thisbullet.x=player.x;
             thisbullet.y=player.y;
             if (arrowup){thisbullet.yvel=-20
@@ -158,28 +136,64 @@
             } else if (arrowleft){thisbullet.xvel=-20};
             bullets.push(thisbullet);
             lastbullet = new Date()
+            shootsound.play();
+            }}
+        }
+        };
+// JS to define factory function for bullets
+    function bulletfactory(){
+        return {x:0,y:0,radius:5,color:'blue',xvel:0,yvel:0,
+        draw:function(){
+            ctx.save();
+            ctx.translate(this.x,this.y);
+            ctx.fillStyle=this.color;
+            ctx.beginPath();
+            ctx.arc(0, 0, this.radius, 0, 2*Math.PI);
+            ctx.fill();
+            ctx.restore();
+        },
+        move:function(){
+            this.x += this.xvel;
+            this.y += this.yvel;
+        }
+        }
+    }
+// JS for function to create balls of n count using a factory function
+    function ballmaker(ballcount){
+        ballarray=[];
+        for (var i=0; i<ballcount; i++) {
+            newball=ballfactory();
+            ballarray.push(newball);
+        }
+        return ballarray
+    }
+    function ballfactory(){
+        return {x:350, y:500, radius:20, color:'red', xvel:-5+Math.random()*10, yvel:-5+Math.random()*10,
+            draw:function(){
+                ctx.save();
+                ctx.translate(this.x,this.y);
+                ctx.fillStyle=this.color;
+                ctx.beginPath();
+                ctx.arc(0, 0, this.radius, 0, 2*Math.PI);
+                ctx.fill();
+                ctx.restore();
+            },
+            move:function(){
+                this.x += this.xvel;
+                this.y += this.yvel;
+                if (this.x+this.radius >= w || this.x-this.radius <= 0){ this.xvel = -this.xvel}
+                if (this.y+this.radius >= h || this.y-this.radius <= 0){this.yvel = -this.yvel}
             }
         }}
-    function moveballs(balls){
-        for (var i=0; i<balls.length; i++){
-            balls[i].x += balls[i].xvel;
-            balls[i].y += balls[i].yvel;
-            if (balls[i].x+balls[i].radius >= w || balls[i].x-balls[i].radius <= 0){ balls[i].xvel = -balls[i].xvel}
-            if (balls[i].y+balls[i].radius >= h || balls[i].y-balls[i].radius <= 0){balls[i].yvel = -balls[i].yvel}
-        }
-        }
-    function movebullets(bullets){
-        for (var i = 0; i < bullets.length ; i++) {
-        bullets[i].x += bullets[i].xvel;
-        bullets[i].y += bullets[i].yvel;
-        }
-        }
-    function deathcheck(player,balls){
+//function which kills player by a ball and kills balls by a bullet and detects game winning
+    function deathcheck(){
         for (var i=0; i<balls.length; i++){
             if (balls[i].x+balls[i].radius >= player.x && balls[i].x-balls[i].radius <= player.x+player.width && balls[i].y+balls[i].radius >= player.y && balls[i].y-balls[i].radius <= player.y+player.height){
                 clearvas();
                 endtime=new Date();
                 gametime = endtime-starttime;
+                deathsound.play();
+                document.querySelector('#song').pause();
                 printvas("YOU DIED! It took " + gametime/1000 + " seconds");
                 return(true)
         }}
@@ -190,26 +204,31 @@
                 balls[j].y+balls[j].radius >= thisbullet.y-thisbullet.radius && thisbullet.y+thisbullet.radius >= balls[j].y-balls[j].radius){
                     balls.splice(j,1)
                     bullets.splice(i,1)
+                    deathsound.play();
         }}}
         if (balls.length==0){
                 clearvas();
                 endtime=new Date();
                 gametime = endtime-starttime;
+                deathsound.play();
+                document.querySelector('#song').pause();
                 printvas("YOU WON! It took " + gametime/1000 + " seconds");
                 return(true)
         }}
+//main game loop
     function play() {
         clearvas();
-        drawplayer(player);
-        drawballs(balls);
-        drawbullets(bullets);
-        moveplayer(player);
-        shoot();
-        moveballs(balls)
-        movebullets(bullets);
-        if (deathcheck(player,balls)==true){return}
+        player.move();
+        player.shoot();
+        balls.forEach(function(item){item.move()});
+        bullets.forEach(function(item){item.move()});
+        player.draw();
+        balls.forEach(function(item){item.draw()});
+        bullets.forEach(function(item){item.draw()});
+        if (deathcheck()==true){return}
         requestAnimationFrame(play);
         }
+//event listeners
     window.addEventListener('keydown', funckeydown);
     window.addEventListener('keyup', funckeyup);
     document.querySelector('#canvasbutton').addEventListener("click", function(){
@@ -221,7 +240,8 @@
     document.querySelector('#playbutton').addEventListener("click", function(){
         starttime = new Date();
         document.querySelector('#instruc').innerHTML="<p>Use WASD to move and arrows to shoot</p>";
-        balls = makeballs(ballcount);
+        document.querySelector('#song').play();
+        balls = ballmaker(ballcount);
         play();
         });
     document.querySelector('#resetbutton').addEventListener("click", function(){
@@ -241,7 +261,34 @@
     Return function: "Return condition ? output : condition ? output : output" to test conditions to determine what to return 
     Arrays: use array.push() to add element, array.pop() to delete last, and array.splice(index #, how many to delete) to delete; array.length for length
     Strings: string.length works, but other array properties don't, need to use string.substring(start,end) to select the indexes to re-define as variable, and use +string to combine
-    
+
+Methods: functions placed within an object -> object.method() to call from object = {method : function(){stuff}}; this.property lets you access other object properties from the method 
+Constructor functions: ES5 and ES6 examples are below; can include methods
+Factory function: This is what bullettemplate() is, and it can use this.property and accept parameters just as constructors can    
+    function bullettemplate(){
+        return {x:0,y:0,radius:5,color:'blue',xvel:0,yvel:0};
+    }
+    function ES5constructbullet(parameters){
+        this.x=0;
+        this.y=0;
+        this.radius=5;
+        this.color='blue';
+        this.xvel=0;
+        this.yvel=0;
+        this.method = {};
+    }
+    class ES6constructbullet {
+    constructor(parameters) {
+        this.x=0;
+        this.y=0;
+        this.radius=5;
+        this.color='blue';
+        this.xvel=0;
+        this.yvel=0;
+        }
+        method(parameters){}
+    }
+
 <div id='audio/video'>
     <video width="" height="" controls="controls">
             <source src="" type="" />
