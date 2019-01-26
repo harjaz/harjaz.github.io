@@ -1,0 +1,70 @@
+<!DOCTYPE HTML>
+<html lang="en>"
+<head>
+    <meta charset="utf-8">
+    <title>JavaScript Test Page</title>
+    <style>
+        body  {
+        color:rgb(0, 0, 50); font-family: monospace, fantasy, cursive, sans-serif, serif;
+        display: flex;  flex-flow: row wrap; align-items: center; align-content: center; justify-content: space-around;}
+        #banner {width:100vw; background-color:aliceblue; border-radius: 15px; margin-bottom: 5px;
+        font-size: 50px; line-height: 0px; text-align: center;
+        box-shadow: 0px 0px 10px rgb(0, 0, 50); text-shadow: 0px 0px 1px rgb(0, 0, 50);}
+        #console {margin-top: 15px; min-height: 150px; width:100vw; background-color:rgb(255, 255, 150) }
+        canvas {border: 1px solid black; background: aliceblue}
+        #instruc {font-family: fantasy; text-align: center; font-size: 20px; line-height: 0px; height: 3px}
+        button {background-color: aliceblue; color: rgb(0, 0, 50)}
+        button:hover {background-color: yellow}
+    </style>
+</head>
+<body>
+    <div id="banner"><p>Deweightify</p></div>
+    <!-- <div id="form">
+        <b>Box of fields</b>
+        Uno <input id="field1" size='5'/>
+        Dos <input id="field2" size='5'/>
+        Tres <input id="field3" size='5'/>
+        Quatro <input id="field4" size='5'/>
+        </div>
+    -->
+    <!-- <div><button class="button" id="but1">But1</button>
+        <button class="button" id="but2">But2</button>
+        <button class="button" id="but3">But3</button>
+        <button class="button" id="but4">But4</button>
+        </div> -->
+    <div>    
+        <div id="heightsliderdisplay"> Height (in) </div>
+        <input type="range" min="1" max="100" value="1" id="heightslider">
+        <div id="weightsliderdisplay"> Weight (lb) </div>
+        <input type="range" min="1" max="1000" value="1" id="weightslider">
+        <div><button class="button" id="BMIbutton">Calculate BMI</button>
+        BMI <input id="BMIfield" size='5'/></div>
+        </div>
+    <div><p id="instruc"></p> <!-- This is where text pops in-->
+<script>
+    window.onload=function(){
+    /* var blankform = document.querySelector('#form').innerHTML; */
+    /* document.querySelector('#calcbutton').addEventListener("click", function(){
+        var field1 = document.querySelector('#but1').value;
+        var field2 = document.querySelector('#but2').value;
+        var field3 = document.querySelector('#but3').value;
+        var field4 = document.querySelector('#but4').value;
+        /* document.querySelector('#instruc').innerHTML="<p>Use WASD to move and arrows to shoot</p>"; Output solution into instruc element */
+        /* document.querySelector('#form').innerHTML=blankform;   Don't use unless you want to blank the form after hitting calculate */ /*
+        });
+    */
+    document.querySelector('#heightslider').addEventListener('input', function(){
+        heightslidercount = document.getElementById("heightslider").value
+        document.querySelector("#heightsliderdisplay").innerHTML= 'Height: ' + heightslidercount + ' in';
+    });
+    document.querySelector('#weightslider').addEventListener('input', function(){
+        weightslidercount = document.getElementById("weightslider").value
+        document.querySelector("#weightsliderdisplay").innerHTML= 'Weight: ' + weightslidercount + ' lb';
+    });
+    document.querySelector('#BMIbutton').addEventListener("click", function(){
+        document.getElementById("BMIfield").value = Math.round(weightslidercount/heightslidercount/heightslidercount*703*100)/100
+    });
+}
+</script>
+</body>
+</html>

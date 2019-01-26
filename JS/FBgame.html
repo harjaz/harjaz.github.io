@@ -51,6 +51,46 @@ FBInstant.startGameAsync().then(function() {
     game.start();
 });
 
+//Saving Stats
+this.facebook.on('savestats', function (data) {
+    //  Handle what the game should do after the stats have saved
+    });
+this.facebook.on('savestatsfail', function (error) {
+    //  Handle what the game should do if the stats fail to save
+    });
+this.facebook.saveStats(stuff_to_save);
+
+//Pulling Stats
+this.facebook.on('getstats', function (data) {
+    //  Handle the loaded data here
+    });
+this.facebook.on('getstatsfail', function (error) {
+    //  Handle what the game should do if the stats fail to load
+    });
+this.facebook.getStats(); // or with specifics, e.g. ([ 'level', 'race' ]);
+
+//Save Data
+this.facebook.on('savedata', function (data) {
+    //  Handle what the game should do when the data saves
+    });
+this.facebook.on('savedatafail', function (error) {
+    //  Handle what the game should do if the data fails to save
+    });
+this.facebook.data.set('property', 'value');
+this.facebook.saveData(data_object);
+//Edit Data
+this.facebook.data.values.property += 100;
+
+//Pull Data
+this.facebook.on('getdata', function (data) {
+    //  Handle what the game should do when the data is returned
+    this.element = this.facebook.data.get('property');
+    });
+this.facebook.on('getdatafail', function (error) {
+    //  Handle what the game should do if the data fails to get
+    });
+this.facebook.getData([ 'name', 'pet', 'combatBonus' ]);
+
 </script>
 </body>
 </html>
